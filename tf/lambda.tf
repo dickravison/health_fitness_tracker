@@ -4,7 +4,7 @@ resource "aws_lambda_function" "export" {
   function_name    = "${var.project_name}_export"
   role             = aws_iam_role.export.arn
   handler          = "main.main"
-  source_code_hash = filebase64sha256("../src/export.zip")
+  source_code_hash = data.archive_file.export.output_base64sha256
   runtime          = var.runtime
   layers           = [data.aws_lambda_layer_version.requests.arn, "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11"]
   architectures    = ["arm64"]
@@ -34,7 +34,7 @@ resource "aws_lambda_function" "notify" {
   function_name    = "${var.project_name}_notify"
   role             = aws_iam_role.notify.arn
   handler          = "main.main"
-  source_code_hash = filebase64sha256("../src/notify.zip")
+  source_code_hash = data.archive_file.notify.output_base64sha256
   runtime          = var.runtime
   layers           = ["arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11", "arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python312-Arm64:16"]
   architectures    = ["arm64"]
@@ -72,7 +72,7 @@ resource "aws_lambda_function" "nutrition" {
   function_name    = "${var.project_name}_nutrition"
   role             = aws_iam_role.nutrition.arn
   handler          = "main.main"
-  source_code_hash = filebase64sha256("../src/nutrition.zip")
+  source_code_hash = data.archive_file.nutrition.output_base64sha256
   runtime          = var.runtime
   layers           = ["arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11", data.aws_lambda_layer_version.scipy.arn, data.aws_lambda_layer_version.requests.arn]
   architectures    = ["arm64"]

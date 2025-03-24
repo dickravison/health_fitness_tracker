@@ -1,4 +1,3 @@
-
 # Roles and attachments
 resource "aws_iam_role" "export" {
   name = "${var.project_name}_export"
