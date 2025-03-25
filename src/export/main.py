@@ -83,24 +83,22 @@ def process_activity(activity, intervals_uid):
     try:
         table.put_item(Item=item)
         process_personal_records(activity, item, intervals_uid)
+        if activity.get('sub_type') == "RACE":
+            process_race(item, intervals_uid)
     except ClientError as e:
         if e.response['Error']['Code'] != 'ConditionalCheckFailedException':
             raise
 
-    if activity.get('sub_type') == "RACE":
-        item = {
-            'PK': f'USER#{intervals_uid}',
-            'SK': f'RACE#{activity_type}#{datetime.strptime(activity['start_date_local'], '%Y-%m-%dT%H:%M:%S').strftime('%Y#%m#%d')}#{activity['id']}',
-            'GSI1PK': f'{intervals_uid}#ACTIVITY',
-            'GSI1SK': activity['start_date_local'],
-            'id': activity['id'],
-            'activity': activity_type,
-            'name': activity.get('name'),
-            'description': activity.get('description')
-        }
-
-RACE#BIKE#DATE#NAME#ACTIVITY
-
+def process_race(item, intervals_uid):
+    race_item = item
+    race_item['SK'] = f'RACE#{item['activity']}#{datetime.strptime(item['GSI1SK'], '%Y-%m-%dT%H:%M:%S').strftime('%Y#%m#%d')}#{item['name']}#{item['id']}'
+    race_item['GSI1PK'] = f'{intervals_uid}#RACE'
+    
+    try:
+        table.put_item(Item=race_item)
+    except ClientError as e:
+        if e.response['Error']['Code'] != 'ConditionalCheckFailedException':
+            raise
 
 def process_personal_records(activity, item, intervals_uid):
     """Process personal records from an activity."""
