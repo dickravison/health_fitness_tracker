@@ -9,7 +9,7 @@ resource "aws_lambda_function" "export" {
   layers           = [data.aws_lambda_layer_version.requests.arn, "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11"]
   architectures    = ["arm64"]
   timeout          = "60"
-  memory_size      = "1024"
+  memory_size      = "128"
 
   environment {
     variables = {
@@ -39,6 +39,7 @@ resource "aws_lambda_function" "notify" {
   layers           = ["arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11", "arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python312-Arm64:16"]
   architectures    = ["arm64"]
   timeout          = "60"
+  memory_size      = "512"
 
   environment {
     variables = {
@@ -77,7 +78,7 @@ resource "aws_lambda_function" "nutrition" {
   layers           = ["arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11", data.aws_lambda_layer_version.scipy.arn, data.aws_lambda_layer_version.requests.arn]
   architectures    = ["arm64"]
   timeout          = "60"
-  memory_size      = "1024"
+  memory_size      = "128"
 
   environment {
     variables = {
